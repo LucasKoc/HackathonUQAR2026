@@ -1,33 +1,41 @@
 import librosa
 import numpy as np
-from sklearn.utils import deprecated
 
 from config import Config
 
 
 class AudioUtils:
     @staticmethod
-    def load_audio(filepath, sample_rate=Config.AUDIO_SAMPLE_RATE):
-        return librosa.load(filepath, sr=sample_rate)
+    def load_audio(filepath, sample_rate=Config.AUDIO_SAMPLE_RATE) -> np.ndarray:
+        target_length = int(Config.AUDIO_SAMPLE_RATE * Config.AUDIO_DURATION)
+
+        signal, _ = librosa.load(filepath, sr=sample_rate, mono=True)
+
+        if len(signal) > target_length:
+            signal = signal[:target_length]
+
+        if len(signal) < target_length:
+            signal = np.pad(signal, (0, target_length - len(signal)))
+
+        return signal
 
     @staticmethod
-    @deprecated
     def extract_features(signal):
-        mfcc = librosa.feature.mfcc(
-            y=signal, sr=Config.AUDIO_SAMPLE_RATE, n_mfcc=Config.AUDIO_N_MFCC
+        n_fft = min(2048, len(signal))
+        print("HIT") if len(signal) <= 2048 else None
+        mfccs = np.mean(
+            librosa.feature.mfcc(
+                y=signal, sr=Config.AUDIO_SAMPLE_RATE, n_mfcc=Config.AUDIO_N_MFCC
+            ),
+            axis=1,
         )
-        zcr = librosa.feature.zero_crossing_rate(signal)
-        rms = librosa.feature.rms(y=signal)
-        centroid = librosa.feature.spectral_centroid(
-            y=signal, sr=Config.AUDIO_SAMPLE_RATE
+        zcr = np.mean(librosa.feature.zero_crossing_rate(y=signal), axis=1)
+        contrast = np.mean(
+            librosa.feature.spectral_contrast(y=signal, sr=Config.AUDIO_SAMPLE_RATE),
+            axis=1,
         )
-        features = np.concatenate(
-            [
-                mfcc.mean(axis=1),
-                mfcc.std(axis=1),
-                [zcr.mean(), zcr.std()],
-                [rms.mean(), rms.std()],
-                [centroid.mean(), centroid.std()],
-            ]
+        chroma = np.mean(
+            librosa.feature.chroma_stft(y=signal, sr=Config.AUDIO_SAMPLE_RATE), axis=1
         )
+        features = np.concatenate((mfccs, chroma, contrast, zcr))
         return features

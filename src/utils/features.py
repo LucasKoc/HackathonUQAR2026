@@ -1,17 +1,37 @@
-from sklearn.utils import deprecated
+import warnings
+from concurrent.futures import ProcessPoolExecutor
+
+import numpy as np
 from tqdm import tqdm
 
 from src.utils.audio import AudioUtils
 
+warnings.filterwarnings("ignore", category=UserWarning, module="librosa")
+
 
 class Features:
     @staticmethod
-    @deprecated
-    def extract_features(dataset) -> tuple[list, list]:
+    def extract_features(dataset) -> tuple[np.ndarray, np.ndarray]:
         X, y = [], []
-        for i in tqdm(range(len(dataset.records))):
-            signal, _ = AudioUtils.load_audio(dataset.records[i].path)
-            features = AudioUtils.extract_features(signal)
+
+        # Use ProcessPoolExecutor for CPU-bound audio processing
+        with ProcessPoolExecutor() as executor:
+            results = list(
+                tqdm(
+                    executor.map(Features.process_single_record, dataset.records),
+                    total=len(dataset.records),
+                    desc="Extracting features",
+                )
+            )
+
+        for features, label in results:
             X.append(features)
-            y.append(dataset.records[i].label)
-        return X, y
+            y.append(label)
+
+        return np.array(X, dtype=np.float32), np.array(y, dtype=np.str_)
+
+    @staticmethod
+    def process_single_record(record):
+        signal = AudioUtils.load_audio(record.path)
+        features = AudioUtils.extract_features(signal)
+        return features, record.label

@@ -4,7 +4,7 @@ class Config:
     DATASET_PATH_SPECTROGRAM = DATASET_PATH + "spectrogram/"
     PATH_TRAIN = "train/"
     PATH_TEST = "test/"
-    PATH_MODEL = DATASET_PATH + "models/"
+    PATH_MODEL = DATASET_PATH + "model/"
     CLASS_NAMES = [
         "Beluga_WhiteWhale",
         "Fin_FinbackWhale",
@@ -14,3 +14,5 @@ class Config:
     ]
     AUDIO_SAMPLE_RATE = 22050
     AUDIO_N_MFCC = 13
+    AUDIO_DURATION = 5
+    RANDOM_STATE = 42

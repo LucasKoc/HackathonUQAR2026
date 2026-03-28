@@ -1,5 +1,7 @@
-import streamlit as st
 from PIL import Image
+
+import streamlit as st
+
 
 def show_song_exemples():
     st.markdown("### Exemples de chants")
@@ -11,7 +13,7 @@ def show_song_exemples():
         st.subheader("[Baleine à bosse](https://fr.wikipedia.org/wiki/Baleine_%C3%A0_bosse)")
         try:
             image1 = Image.open("streamlit/assets/pictures/animals/humpback_whale.jpg")
-            st.image(image1, caption="Humpback Whale", width='stretch')
+            st.image(image1, caption="Humpback Whale", width="stretch")
         except FileNotFoundError:
             st.warning("Image baleine à bosse non trouvée. Assurez-vous que le chemin est correct.")
         try:
@@ -24,7 +26,7 @@ def show_song_exemples():
         st.subheader("[Bélugua](https://fr.wikipedia.org/wiki/B%C3%A9luga_(c%C3%A9tac%C3%A9))")
         try:
             image2 = Image.open("streamlit/assets/pictures/animals/beluga.jpg")
-            st.image(image2, caption="Bélugua", width='stretch')
+            st.image(image2, caption="Bélugua", width="stretch")
         except FileNotFoundError:
             st.warning("Image belugua non trouvée. Assurez-vous que le chemin est correct.")
         try:
@@ -39,7 +41,7 @@ def show_song_exemples():
         st.subheader("[Cachalot](https://fr.wikipedia.org/wiki/Grand_cachalot)")
         try:
             image3 = Image.open("streamlit/assets/pictures/animals/sperm_whale.jpg")
-            st.image(image3, caption="Sperm Whale", width='stretch')
+            st.image(image3, caption="Sperm Whale", width="stretch")
         except FileNotFoundError:
             st.warning("Image cachalot non trouvée. Assurez-vous que le chemin est correct.")
         try:
@@ -51,8 +53,10 @@ def show_song_exemples():
     with col4:
         st.subheader("[Dauphin à flancs blancs](https://fr.wikipedia.org/wiki/Lagenorhynchus_acutus)")
         try:
-            image4 = Image.open("streamlit/assets/pictures/animals/white_sided_dolphin.jpg")
-            st.image(image4, caption="White sided Dolphin", width='stretch')
+            image4 = Image.open(
+                "streamlit/assets/pictures/animals/white_sided_dolphin.jpg"
+            )
+            st.image(image4, caption="White sided Dolphin", width="stretch")
         except FileNotFoundError:
             st.warning("Image dauphin non trouvée. Assurez-vous que le chemin est correct.")
         try:
@@ -66,8 +70,10 @@ def show_song_exemples():
     with col_center:
         st.subheader("[Rorqual Commun](https://fr.wikipedia.org/wiki/Rorqual_commun)")
         try:
-            image5 = Image.open("streamlit/assets/pictures/animals/fin_finback_whale.jpg")
-            st.image(image5, caption="Fin finback whale", width='stretch')
+            image5 = Image.open(
+                "streamlit/assets/pictures/animals/fin_finback_whale.jpg"
+            )
+            st.image(image5, caption="Fin finback whale", width="stretch")
         except FileNotFoundError:
             st.warning("Image rorqual commun non trouvée. Assurez-vous que le chemin est correct.")
         try:

@@ -1,9 +1,9 @@
-import streamlit as st
-from PIL import Image
-
 from pages.home import show_home
 from pages.performances import show_performances
 from pages.songs_exemples import show_song_exemples
+from PIL import Image
+
+import streamlit as st
 
 # Configuration de la page
 logo_directory = "streamlit/assets/pictures/logo.png"
@@ -12,14 +12,11 @@ try:
 except Exception:
     img = None
 
-st.set_page_config(
-    page_title="IA Hack 2026",
-    page_icon=img,
-    layout="wide"
-)
+st.set_page_config(page_title="IA Hack 2026", page_icon=img, layout="wide")
 
 # Style CSS
-st.markdown("""
+st.markdown(
+    """
     <style>
     [data-testid="stSidebar"] {
         display: none;
@@ -49,7 +46,9 @@ st.markdown("""
         padding-top: 1.5rem;
     }         
     </style>
-    """, unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True,
+)
 
 # En-tête
 col_side1, col_logo, col_side2 = st.columns([2, 1, 2])

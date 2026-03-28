@@ -15,6 +15,9 @@ class AudioDataset:
         self.path = Path(path)
         self.records = self._index_files()
 
+    def __len__(self):
+        return len(self.records)
+
     def _index_files(self) -> list[AudioRecord]:
         records = []
         for class_dir in sorted(self.path.iterdir()):

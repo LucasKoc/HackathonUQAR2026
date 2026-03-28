@@ -1,3 +1,4 @@
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 import librosa
@@ -5,7 +6,6 @@ import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
-from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from config import Config
 from src.utils.dataset import AudioDataset
