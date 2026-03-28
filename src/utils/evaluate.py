@@ -1,3 +1,5 @@
+import json
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -30,7 +32,19 @@ class Evaluate:
         print(f"{'─' * 60}")
         print(report)
 
-        return {"accuracy": acc, "report": report, "confusion_matrix": cm}
+        report_str = classification_report(
+            y_test, y_pred, target_names=Config.CLASS_NAMES, digits=3
+        )
+        report_dict = classification_report(
+            y_test, y_pred, target_names=Config.CLASS_NAMES, output_dict=True
+        )
+
+        return {
+            "accuracy": acc,
+            "report": report_str,
+            "report_dict": report_dict,
+            "confusion_matrix": cm,
+        }
 
     @staticmethod
     def plot_confusion_matrix(cm: np.ndarray, save_path: str | None = None) -> None:
@@ -63,7 +77,6 @@ class Evaluate:
 
         plt.show()
 
-
     @staticmethod
     def plot_feature_importance(
         pipeline: Pipeline, top_n: int = 20, save_path: str | None = None
@@ -74,7 +87,6 @@ class Evaluate:
         """
         clf = pipeline.named_steps["clf"]
         if not hasattr(clf, "feature_importances_"):
-            print("[INFO] Importance des features non disponible pour ce modèle.")
             return
 
         importances = clf.feature_importances_
@@ -93,3 +105,8 @@ class Evaluate:
             plt.savefig(save_path, dpi=150)
 
         plt.show()
+
+    @staticmethod
+    def export_report_json(report_dict: dict, save_path: str) -> None:
+        with open(save_path, "w", encoding="utf-8") as f:
+            json.dump(report_dict, f, indent=2, ensure_ascii=False)

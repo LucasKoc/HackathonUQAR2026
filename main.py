@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     # 3. Entraînement du modèle
     # random_forest svm gradient_boosting
-    model = "svm"
+    model = "random_forest"
     pipeline = Classification(model)
     pipeline.train(X_train, y_train)
     Classification.save_model(pipeline.pipeline, name=model)
@@ -28,12 +28,17 @@ if __name__ == "__main__":
 
     # 4. Evaluation
     results = Evaluate.evaluate(pipeline, X_test, y_test)
+    Evaluate.export_report_json(
+        results["report_dict"], Config.PATH_MODEL + f"/report_{model}.json"
+    )
 
     # 5. Visualisations
     Evaluate.plot_confusion_matrix(
         results["confusion_matrix"],
-        save_path=str(Config.PATH_MODEL + f"confusion_matrix_{model}.png",
-    ))
+        save_path=str(
+            Config.PATH_MODEL + f"confusion_matrix_{model}.png",
+        ),
+    )
     Evaluate.plot_feature_importance(pipeline)
 
     exit()

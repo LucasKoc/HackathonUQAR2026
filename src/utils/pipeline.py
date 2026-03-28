@@ -3,6 +3,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -45,6 +46,13 @@ class Classification:
                 max_depth=5,
                 random_state=Config.RANDOM_STATE,
             ),
+            "KNN": KNeighborsClassifier(
+                n_neighbors=5,
+                algorithm="auto",
+                leaf_size=30,
+                metric="euclidean",
+                n_jobs=-1,
+            ),
         }
 
         self.build_pipeline(model_name)
@@ -61,12 +69,10 @@ class Classification:
         """Entraîne le pipeline et retourne le pipeline fitted."""
         self.pipeline.fit(X_train, y_train)
 
-
     @staticmethod
     def save_model(pipeline: Pipeline, name: str = "model") -> None:
         path = Config.PATH_MODEL + f"{name}.joblib"
         joblib.dump(pipeline, path)
-
 
     @staticmethod
     def load_model(name: str) -> Pipeline:
