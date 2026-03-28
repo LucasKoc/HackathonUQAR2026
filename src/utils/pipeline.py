@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
 from config import Config
+from src.utils.audio import AudioUtils
 
 # ── Choix du modèle ───────────────────────────────────────────────────────────
 #
@@ -46,13 +47,6 @@ class Classification:
                 max_depth=5,
                 random_state=Config.RANDOM_STATE,
             ),
-            "KNN": KNeighborsClassifier(
-                n_neighbors=5,
-                algorithm="auto",
-                leaf_size=30,
-                metric="euclidean",
-                n_jobs=-1,
-            ),
         }
 
         self.build_pipeline(model_name)
@@ -78,3 +72,22 @@ class Classification:
     def load_model(name: str) -> Pipeline:
         path = Config.PATH_MODEL + f"{name}.joblib"
         return joblib.load(path)
+
+    @staticmethod
+    def predict(pipeline: Pipeline, audio_path: str) -> dict:
+        signal = AudioUtils.load_audio(audio_path)
+        features = AudioUtils.extract_features(signal)
+        # (1, n_features) — batch de 1
+        X = features.reshape(1, -1)
+
+        label = pipeline.predict(X)[0]
+
+        if hasattr(pipeline.named_steps["clf"], "predict_proba"):
+            probas = pipeline.predict_proba(X)[0]
+            confidence = {
+                name: round(float(p), 4) for name, p in zip(Config.CLASS_NAMES, probas)
+            }
+        else:
+            confidence = None
+
+        return {"label": label, "confidence": confidence}

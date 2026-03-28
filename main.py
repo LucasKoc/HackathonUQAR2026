@@ -41,4 +41,19 @@ if __name__ == "__main__":
     )
     Evaluate.plot_feature_importance(pipeline)
 
-    exit()
+    ###
+    # Prédiction d'un fichier audio
+    ###
+
+    # Prédiction sur un fichier audio
+    pipeline = Classification.load_model(name=model)
+    result = Classification.predict(
+        pipeline, Config.DATASET_PATH_AUDIO + Config.PATH_TEST + "videoplayback.wav"
+    )
+
+    print(f"Espèce prédite : {result['label']}")
+    if result["confidence"]:
+        for species, proba in sorted(
+            result["confidence"].items(), key=lambda item: item[1], reverse=True
+        ):
+            print(f"  {species}: {proba:.2%}")
