@@ -16,6 +16,9 @@ librosa
 soundfile
 scipy
 
+## Interface Web
+streamlit
+
 # Optional dependencies
 black
 isort
