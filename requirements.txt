@@ -1,5 +1,10 @@
+# Required dependencies
 numpy
 torch
+matplotlib
+scikit-learn
 
+# Optional dependencies
 black
 isort
+tqdm
