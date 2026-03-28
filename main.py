@@ -2,6 +2,9 @@
 Hackathon IA'Hack 2026 (hackathon.uqar.ca)
 """
 
+from os import mkdir
+from pathlib import Path
+
 from config import Config
 from src.utils.dataset import AudioDataset
 from src.utils.evaluate import Evaluate
@@ -9,9 +12,12 @@ from src.utils.features import Features
 from src.utils.pipeline import Classification
 
 if __name__ == "__main__":
+    # 0. Créer dossier model
+    mkdir(Path(Config.PATH_MODEL)) if not Path(Config.PATH_MODEL).exists() else None
+
     # 1. Chargement des données
-    train_dataset = AudioDataset(Config.DATASET_PATH_AUDIO + Config.PATH_TRAIN)
-    test_dataset = AudioDataset(Config.DATASET_PATH_AUDIO + Config.PATH_TEST)
+    train_dataset = AudioDataset(Config.DATASET_PATH + Config.PATH_TRAIN)
+    test_dataset = AudioDataset(Config.DATASET_PATH + Config.PATH_TEST)
 
     # 2. Extraction des features
     X_train, y_train = Features.extract_features(train_dataset)
@@ -48,7 +54,7 @@ if __name__ == "__main__":
     # Prédiction sur un fichier audio
     pipeline = Classification.load_model(name=model)
     result = Classification.predict(
-        pipeline, Config.DATASET_PATH_AUDIO + Config.PATH_TEST + "videoplayback.wav"
+        pipeline, Config.DATASET_PATH + Config.PATH_TEST + "videoplayback.m4a"
     )
 
     print(f"Espèce prédite : {result['label']}")

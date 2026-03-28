@@ -1,7 +1,5 @@
 class Config:
-    DATASET_PATH = "Data/Part 1/"
-    DATASET_PATH_AUDIO = DATASET_PATH + "audio/"
-    DATASET_PATH_SPECTROGRAM = DATASET_PATH + "spectrogram/"
+    DATASET_PATH = "Data/Partie #1/Base de données/"
     PATH_TRAIN = "train/"
     PATH_TEST = "test/"
     PATH_MODEL = DATASET_PATH + "model/"
