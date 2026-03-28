@@ -3,6 +3,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -47,6 +48,11 @@ class Classification:
                 max_depth=5,
                 random_state=Config.RANDOM_STATE,
             ),
+            "logistic_regression": LogisticRegression(
+                max_iter=1000,
+                class_weight="balanced",
+                random_state=Config.RANDOM_STATE
+            )
         }
 
         self.build_pipeline(model_name)

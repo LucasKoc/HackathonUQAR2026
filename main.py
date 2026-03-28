@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # 3. Entraînement du modèle
     # random_forest svm gradient_boosting
-    model = "random_forest"
+    model = "logistic_regression"
     pipeline = Classification(model)
     pipeline.train(X_train, y_train)
     Classification.save_model(pipeline.pipeline, name=model)
