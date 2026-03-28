@@ -10,8 +10,8 @@ Domain of this Hackathon is about maritime.
 Venv creation and activation:
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 Dependency installation:
