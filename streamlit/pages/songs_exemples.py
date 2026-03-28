@@ -4,54 +4,53 @@ import streamlit as st
 
 
 def show_song_exemples():
-    st.markdown("### Exemples de chants")
+    st.markdown("### Exemples de Songs")
     st.write("Écoutez des extraits d'animaux reconnus par notre IA :")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("[Baleine à bosse](https://fr.wikipedia.org/wiki/Baleine_%C3%A0_bosse)")
+        st.subheader("Baleine à bosse")
         try:
             image1 = Image.open("streamlit/assets/pictures/animals/humpback_whale.jpg")
             st.image(image1, caption="Humpback Whale", width="stretch")
         except FileNotFoundError:
-            st.warning("Image baleine à bosse non trouvée. Assurez-vous que le chemin est correct.")
-        try:
-            audio4 = open("streamlit/assets/songs/animals/humpback_whale.mp3", "rb")
-            st.audio(audio4, format='audio/mp3')
-        except FileNotFoundError:
-            st.warning("Audio baleine à bosse non trouvé. Assurez-vous que le chemin est correct.")
+            st.warning("Image cover1.jpg non trouvée. Assurez-vous que le chemin est correct.")
+        
+        # Remplacez par le chemin du fichier audio
+        # st.audio("streamlit/assets/songs/animals/audio1.mp3", format='audio/mp3')
+        # if st.button("Écouter (1)", key="song1_btn"):
+        #     st.write("Lecture de Song Title 1...")
 
     with col2:
-        st.subheader("[Bélugua](https://fr.wikipedia.org/wiki/B%C3%A9luga_(c%C3%A9tac%C3%A9))")
+        st.subheader("Bélugua")
         try:
             image2 = Image.open("streamlit/assets/pictures/animals/beluga.jpg")
             st.image(image2, caption="Bélugua", width="stretch")
         except FileNotFoundError:
             st.warning("Image belugua non trouvée. Assurez-vous que le chemin est correct.")
-        try:
-            audio2 = open("streamlit/assets/songs/animals/beluga.mp3", "rb")
-            st.audio(audio2, format='audio/mp3')
-        except FileNotFoundError:
-            st.warning("Audio bélugua non trouvé. Assurez-vous que le chemin est correct.")
         
+        # st.audio("streamlit/assets/songs/animals/audio2.mp3", format='audio/mp3')
+        # if st.button("Écouter (2)", key="song2_btn"):
+        #     st.write("Lecture de Song Title 2...")
+
+    # La deuxième ligne (2 cartes)
     col3, col4 = st.columns(2)
 
     with col3:
-        st.subheader("[Cachalot](https://fr.wikipedia.org/wiki/Grand_cachalot)")
+        st.subheader("Cachalot")
         try:
             image3 = Image.open("streamlit/assets/pictures/animals/sperm_whale.jpg")
             st.image(image3, caption="Sperm Whale", width="stretch")
         except FileNotFoundError:
             st.warning("Image cachalot non trouvée. Assurez-vous que le chemin est correct.")
-        try:
-            audio3 = open("streamlit/assets/songs/animals/sperm_whale.mp3", "rb")
-            st.audio(audio3, format='audio/mp3')
-        except FileNotFoundError:
-            st.warning("Audio cachalot non trouvé. Assurez-vous que le chemin est correct.")
- 
+        
+        # st.audio("streamlit/assets/songs/animals/audio3.mp3", format='audio/mp3')
+        # if st.button("Écouter (3)", key="song3_btn"):
+        #     st.write("Lecture de Song Title 3...")
+
     with col4:
-        st.subheader("[Dauphin à flancs blancs](https://fr.wikipedia.org/wiki/Lagenorhynchus_acutus)")
+        st.subheader("Dauphin à flancs blancs")
         try:
             image4 = Image.open(
                 "streamlit/assets/pictures/animals/white_sided_dolphin.jpg"
@@ -59,16 +58,16 @@ def show_song_exemples():
             st.image(image4, caption="White sided Dolphin", width="stretch")
         except FileNotFoundError:
             st.warning("Image dauphin non trouvée. Assurez-vous que le chemin est correct.")
-        try:
-            audio4 = open("streamlit/assets/songs/animals/white_sided_dolphin.mp3", "rb")
-            st.audio(audio4, format='audio/mp3')
-        except FileNotFoundError:
-            st.warning("Audio dauphin non trouvé. Assurez-vous que le chemin est correct.")
+        
+        # st.audio("streamlit/assets/songs/animals/audio4.mp3", format='audio/mp3')
+        # if st.button("Écouter (4)", key="song4_btn"):
+        #     st.write("Lecture de Song Title 4...")
 
-    col_empty1, col_center, col_empty2 = st.columns([1, 2, 1])
+    # --- Ligne 3 : Une seule carte centrée ---
+    col_empty1, col_center, col_empty2 = st.columns([1, 2, 1]) # Ratios pour centrer
 
     with col_center:
-        st.subheader("[Rorqual Commun](https://fr.wikipedia.org/wiki/Rorqual_commun)")
+        st.subheader("Rorqual Commun")
         try:
             image5 = Image.open(
                 "streamlit/assets/pictures/animals/fin_finback_whale.jpg"
@@ -76,8 +75,7 @@ def show_song_exemples():
             st.image(image5, caption="Fin finback whale", width="stretch")
         except FileNotFoundError:
             st.warning("Image rorqual commun non trouvée. Assurez-vous que le chemin est correct.")
-        try:
-            audio5 = open("streamlit/assets/songs/animals/fin_finback_whale.mp3", "rb")
-            st.audio(audio5, format='audio/mp3')
-        except FileNotFoundError:
-            st.warning("Audio rorqual commun non trouvé. Assurez-vous que le chemin est correct.")
+        
+        # st.audio("streamlit/assets/songs/animals/audio5.mp3", format='audio/mp3')
+        # if st.button("Écouter (5)", key="song5_btn"):
+        #     st.write("Lecture de Song Title 5...")

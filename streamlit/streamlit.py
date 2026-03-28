@@ -21,7 +21,6 @@ st.markdown(
     [data-testid="stSidebar"] {
         display: none;
     }
-
     /* Centrer le titre H1 */
     h1 {
         text-align: center;
@@ -44,7 +43,7 @@ st.markdown(
     /* Réduire l'espace blanc en haut de la page */
     .block-container {
         padding-top: 1.5rem;
-    }         
+    }
     </style>
     """,
     unsafe_allow_html=True,
