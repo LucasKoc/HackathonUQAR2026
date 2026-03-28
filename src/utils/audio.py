@@ -1,5 +1,6 @@
 import librosa
 import numpy as np
+from sklearn.utils import deprecated
 
 from config import Config
 
@@ -10,6 +11,7 @@ class AudioUtils:
         return librosa.load(filepath, sr=sample_rate)
 
     @staticmethod
+    @deprecated
     def extract_features(signal):
         mfcc = librosa.feature.mfcc(
             y=signal, sr=Config.AUDIO_SAMPLE_RATE, n_mfcc=Config.AUDIO_N_MFCC
