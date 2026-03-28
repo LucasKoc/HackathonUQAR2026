@@ -1,8 +1,20 @@
 # Required dependencies
+
+## Data manipulation
 numpy
-torch
+pandas
+
+## Visualisation
 matplotlib
+seaborn
+
+## ML
 scikit-learn
+
+## Audio processing
+librosa
+soundfile
+scipy
 
 # Optional dependencies
 black
