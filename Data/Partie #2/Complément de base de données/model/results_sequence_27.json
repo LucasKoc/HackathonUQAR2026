@@ -1,8 +1,8 @@
 {
   "num_events": 10,
-  "iou_global": 0.4611,
+  "iou_global": 0.6161,
   "iou_per_class": {
-    "Beluga_WhiteWhale": 0.4375,
+    "Beluga_WhiteWhale": 0.4456630109670987,
     "Fin_FinbackWhale": 0.0,
     "HumpbackWhale": 0.0,
     "SpermWhale": 0.0,
@@ -10,64 +10,64 @@
   },
   "events": [
     {
-      "label": "HumpbackWhale",
-      "start_sec": 9.5,
-      "end_sec": 13.5,
-      "duration_sec": 4.0
+      "label": "Beluga_WhiteWhale",
+      "start_sec": 10.75,
+      "end_sec": 12.25,
+      "duration_sec": 1.5
     },
     {
       "label": "Beluga_WhiteWhale",
-      "start_sec": 27.5,
-      "end_sec": 30.0,
-      "duration_sec": 2.5
+      "start_sec": 28.5,
+      "end_sec": 29.5,
+      "duration_sec": 1.0
     },
     {
       "label": "Beluga_WhiteWhale",
-      "start_sec": 41.0,
-      "end_sec": 44.5,
-      "duration_sec": 3.5
+      "start_sec": 42.0,
+      "end_sec": 43.0,
+      "duration_sec": 1.0
+    },
+    {
+      "label": "Beluga_WhiteWhale",
+      "start_sec": 62.25,
+      "end_sec": 63.75,
+      "duration_sec": 1.5
+    },
+    {
+      "label": "Beluga_WhiteWhale",
+      "start_sec": 75.0,
+      "end_sec": 76.0,
+      "duration_sec": 1.0
     },
     {
       "label": "HumpbackWhale",
-      "start_sec": 61.0,
-      "end_sec": 63.0,
+      "start_sec": 75.75,
+      "end_sec": 76.75,
+      "duration_sec": 1.0
+    },
+    {
+      "label": "HumpbackWhale",
+      "start_sec": 116.75,
+      "end_sec": 117.75,
+      "duration_sec": 1.0
+    },
+    {
+      "label": "HumpbackWhale",
+      "start_sec": 155.25,
+      "end_sec": 157.5,
+      "duration_sec": 2.25
+    },
+    {
+      "label": "Beluga_WhiteWhale",
+      "start_sec": 192.0,
+      "end_sec": 194.0,
       "duration_sec": 2.0
     },
     {
       "label": "Beluga_WhiteWhale",
-      "start_sec": 61.5,
-      "end_sec": 64.5,
-      "duration_sec": 3.0
-    },
-    {
-      "label": "HumpbackWhale",
-      "start_sec": 74.5,
-      "end_sec": 77.0,
-      "duration_sec": 2.5
-    },
-    {
-      "label": "HumpbackWhale",
-      "start_sec": 82.5,
-      "end_sec": 85.5,
-      "duration_sec": 3.0
-    },
-    {
-      "label": "HumpbackWhale",
-      "start_sec": 115.5,
-      "end_sec": 118.5,
-      "duration_sec": 3.0
-    },
-    {
-      "label": "HumpbackWhale",
-      "start_sec": 154.5,
-      "end_sec": 158.5,
-      "duration_sec": 4.0
-    },
-    {
-      "label": "Beluga_WhiteWhale",
-      "start_sec": 191.5,
-      "end_sec": 194.5,
-      "duration_sec": 3.0
+      "start_sec": 232.5,
+      "end_sec": 233.75,
+      "duration_sec": 1.25
     }
   ]
 }

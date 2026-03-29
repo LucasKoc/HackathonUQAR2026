@@ -1,16 +1,3 @@
-"""
-Détection d'intervalles par fenêtre glissante (Partie 2 du défi).
-
-Pipeline :
-    1. Charger l'audio long sans troncature
-    2. Découper en fenêtres (sliding window)
-    3. Classifier chaque fenêtre (6 classes : 5 espèces + noise)
-    4. Filtrer par énergie RMS et seuil de confiance
-    5. Fusionner les fenêtres consécutives du même label
-    6. Filtrer les détections trop courtes
-    7. Évaluer avec IoU contre les annotations CSV
-"""
-
 import csv
 import json
 
@@ -46,7 +33,7 @@ class Detection:
         window_size_sec=Config.WINDOW_SIZE_SEC,
         hop_size_sec=Config.HOP_SIZE_SEC,
         sr=Config.AUDIO_SAMPLE_RATE,
-        confidence_threshold=0.5,
+        confidence_threshold=0.7,
         energy_threshold=0.005,
     ):
         """
@@ -110,11 +97,6 @@ class Detection:
         """
         Fusionne les fenêtres consécutives ayant le même label (non-noise),
         puis filtre les détections trop courtes.
-
-        Args:
-            max_gap_sec      : écart max toléré entre deux fenêtres pour fusionner.
-                               Par défaut = HOP_SIZE_SEC (fenêtres contiguës).
-            min_duration_sec : durée minimale d'une détection (en dessous -> supprimée).
         """
         if max_gap_sec is None:
             max_gap_sec = Config.HOP_SIZE_SEC + 0.01

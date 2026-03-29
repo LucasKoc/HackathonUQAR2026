@@ -20,6 +20,7 @@ if __name__ == "__main__":
     # Partie 1 du défi
     ###
 
+    """
     # P1 utilise des clips de 5 secondes
     Config.AUDIO_DURATION = 5.0
 
@@ -93,6 +94,7 @@ if __name__ == "__main__":
                 result["confidence"].items(), key=lambda item: item[1], reverse=True
             ):
                 print(f"  {species}: {proba:.2%}")
+    """
     ###
     # Partie 2 du défi
     ###
@@ -129,7 +131,7 @@ if __name__ == "__main__":
 
     # 3. Training
     # random_forest svm gradient_boosting logistic_regression knn
-    model_name = "random_forest"
+    model_name = "svm"
     clf = Classification(model_name)
     clf.train(X_train, y_train)
 

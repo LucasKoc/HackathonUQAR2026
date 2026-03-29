@@ -26,8 +26,8 @@ class Config:
     AUDIO_N_MFCC = 13
 
     # P2 Audio settings
-    WINDOW_SIZE_SEC = 2.0
-    HOP_SIZE_SEC = 0.5
+    WINDOW_SIZE_SEC = 0.5
+    HOP_SIZE_SEC = 0.25
 
     # AUDIO_DURATION DOIT correspondre à WINDOW_SIZE_SEC
     # pour que les features d'entraînement et de détection soient compatibles.
@@ -38,6 +38,6 @@ class Config:
     RANDOM_STATE = 42
 
     # Detection settings
-    CONFIDENCE_THRESHOLD = 0.3
+    CONFIDENCE_THRESHOLD = 0.5
     ENERGY_THRESHOLD = 0.001
     MIN_DETECTION_SEC = 0.8
