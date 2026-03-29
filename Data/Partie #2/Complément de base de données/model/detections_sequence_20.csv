@@ -1,8 +1,6 @@
 animal,start_sec,end_sec,duration_sec
-Beluga_WhiteWhale,18.75,19.75,1.0
 HumpbackWhale,19.5,20.75,1.25
-HumpbackWhale,89.25,90.75,1.5
-Beluga_WhiteWhale,97.25,98.25,1.0
-Beluga_WhiteWhale,181.25,183.0,1.75
-HumpbackWhale,215.5,216.5,1.0
-HumpbackWhale,225.75,227.0,1.25
+HumpbackWhale,89.25,91.0,1.75
+Beluga_WhiteWhale,97.5,98.5,1.0
+HumpbackWhale,181.5,183.25,1.75
+HumpbackWhale,225.25,226.75,1.5

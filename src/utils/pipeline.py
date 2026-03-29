@@ -15,16 +15,16 @@ from src.utils.audio import AudioUtils
 #  On propose trois classifieurs. RandomForest est le défaut :
 #  rapide à entraîner, robuste, et donne de bonnes probabilités via predict_proba.
 #
-#  SVM (RBF) est souvent le meilleur sur peu de données mais plus lent.
+#  Support Vector Machine est souvent le meilleur sur peu de données mais plus lent.
 #  GradientBoosting est plus précis mais nettement plus lent à entraîner.
 # ─────────────────────────────────────────────────────────────────────────────
 
 
 class Classification:
-    def __init__(self, model_name: str = "random_forest"):
+    def __init__(self, model_name: str = "Random Forest"):
         self.pipeline = None
         self.models = {
-            "random_forest": RandomForestClassifier(
+            "Random Forest": RandomForestClassifier(
                 n_estimators=300,
                 max_depth=None,
                 min_samples_leaf=2,
@@ -32,7 +32,7 @@ class Classification:
                 random_state=Config.RANDOM_STATE,
                 n_jobs=-1,
             ),
-            "svm": SVC(
+            "Support Vector Machine": SVC(
                 kernel="rbf",
                 C=10,
                 gamma="scale",
@@ -40,18 +40,18 @@ class Classification:
                 class_weight="balanced",
                 random_state=Config.RANDOM_STATE,
             ),
-            "gradient_boosting": GradientBoostingClassifier(
+            "Gradient Boosting": GradientBoostingClassifier(
                 n_estimators=200,
                 learning_rate=0.1,
                 max_depth=5,
                 random_state=Config.RANDOM_STATE,
             ),
-            "logistic_regression": LogisticRegression(
+            "Logistic Regression": LogisticRegression(
                 max_iter=1000,
                 class_weight="balanced",
                 random_state=Config.RANDOM_STATE,
             ),
-            "knn": KNeighborsClassifier(
+            "KNN": KNeighborsClassifier(
                 n_neighbors=5,
                 algorithm="auto",
                 n_jobs=-1,
@@ -69,7 +69,6 @@ class Classification:
         )
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray) -> None:
-        """Entraîne le pipeline et retourne le pipeline fitted."""
         self.pipeline.fit(X_train, y_train)
 
     @staticmethod
@@ -86,7 +85,6 @@ class Classification:
     def predict(pipeline: Pipeline, audio_path: str) -> dict:
         signal = AudioUtils.load_audio_full(audio_path)
         features = AudioUtils.extract_features(signal)
-        # (1, n_features) — batch de 1
         X = features.reshape(1, -1)
 
         label = pipeline.predict(X)[0]
@@ -100,3 +98,16 @@ class Classification:
             confidence = None
 
         return {"label": label, "confidence": confidence}
+
+    @staticmethod
+    def predict_all(audio_path: str, model_dir: str, audio_duration: float | None = None) -> dict:
+        Config.AUDIO_DURATION = audio_duration if audio_duration is not None else 5.0
+
+        temp = Classification()
+        results = {}
+
+        for model_name in temp.models:
+            pipeline = Classification.load_model(path=model_dir, name=model_name)
+            results[model_name] = Classification.predict(pipeline, audio_path)
+
+        return results

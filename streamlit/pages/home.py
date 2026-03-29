@@ -4,11 +4,13 @@ from pathlib import Path
 import streamlit as st
 from PIL import Image
 
+from config import Config
+from src.utils.pipeline import Classification
 from src.utils.spectrogram import Spectrogram
 
 
 def show_home():
-    st.markdown("### Bienvenue à l'IA'Hack 2026")
+    st.markdown("### Analyse d'un animal marin - Partie 1")
     st.write(
         "Déposez votre fichier audio pour détecter l'animal présent dans l'extrait."
     )
@@ -32,12 +34,21 @@ def show_home():
                 with open(temp_audio_path, "wb") as f:
                     f.write(uploaded_file.getbuffer())
 
+                # spectrogramme
                 spectro_path = temp_dir / f"{temp_audio_path.stem}_spectrogram.png"
                 Spectrogram.create_single_spectrogram(temp_audio_path, spectro_path)
+
+                # lancer tous les modèles P1 sauvegardés
+                model_dir = Config.DATASET_PATH_P1 + Config.PATH_MODEL
+                all_results = Classification.predict_all(
+                    audio_path=str(temp_audio_path),
+                    model_dir=model_dir,
+                )
 
                 st.session_state["analysis_done"] = True
                 st.session_state["uploaded_filename"] = uploaded_file.name
                 st.session_state["spectrogram_path"] = str(spectro_path)
+                st.session_state["all_model_results"] = all_results
 
                 time.sleep(1)
         else:
@@ -54,7 +65,6 @@ def show_home():
 
         with res_col1:
             spectrogram_path = st.session_state.get("spectrogram_path")
-
             if spectrogram_path and Path(spectrogram_path).exists():
                 st.image(spectrogram_path, caption="Spectrogramme", width="stretch")
             else:
@@ -69,10 +79,23 @@ def show_home():
             st.write(
                 f"**Fichier analysé :** {st.session_state.get('uploaded_filename', 'N/A')}"
             )
-            st.success(
-                """
-                L'intelligence artificielle a détecté des motifs acoustiques
-                correspondant à une signature de **Baleine à bosse**.
-                Le niveau de confiance est de **98.4%**.
-                """
-            )
+
+            results = st.session_state.get("all_model_results", {})
+
+            for model_name, result in results.items():
+                st.markdown(f"#### {model_name}")
+
+                st.write(f"**Prédiction :** {result['label']}")
+
+                if result["confidence"]:
+                    sorted_conf = sorted(
+                        result["confidence"].items(),
+                        key=lambda item: item[1],
+                        reverse=True,
+                    )
+
+                    with st.expander(f"Probabilités de {model_name}"):
+                        for species, proba in sorted_conf:
+                            st.write(f"- {species}: {proba:.2%}")
+                else:
+                    st.info("Ce modèle ne fournit pas de probabilités.")

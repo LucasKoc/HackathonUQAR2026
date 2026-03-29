@@ -1,0 +1,45 @@
+{
+  "Beluga_WhiteWhale": {
+    "precision": 0.9347826086956522,
+    "recall": 0.8431372549019608,
+    "f1-score": 0.8865979381443299,
+    "support": 153.0
+  },
+  "Fin_FinbackWhale": {
+    "precision": 0.9966442953020134,
+    "recall": 0.9867109634551495,
+    "f1-score": 0.991652754590985,
+    "support": 301.0
+  },
+  "HumpbackWhale": {
+    "precision": 0.9969230769230769,
+    "recall": 0.9984591679506933,
+    "f1-score": 0.9976905311778291,
+    "support": 649.0
+  },
+  "SpermWhale": {
+    "precision": 0.9718482252141983,
+    "recall": 0.9682926829268292,
+    "f1-score": 0.9700671960904093,
+    "support": 820.0
+  },
+  "White_sidedDolphin": {
+    "precision": 0.971709717097171,
+    "recall": 0.9962168978562421,
+    "f1-score": 0.9838107098381071,
+    "support": 793.0
+  },
+  "accuracy": 0.9786450662739322,
+  "macro avg": {
+    "precision": 0.9743815846464224,
+    "recall": 0.958563393418175,
+    "f1-score": 0.9659638259683321,
+    "support": 2716.0
+  },
+  "weighted avg": {
+    "precision": 0.9784595358148441,
+    "recall": 0.9786450662739322,
+    "f1-score": 0.9783708071053515,
+    "support": 2716.0
+  }
+}

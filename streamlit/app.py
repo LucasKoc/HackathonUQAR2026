@@ -8,6 +8,7 @@ if str(ROOT_DIR) not in sys.path:
 from pages.home import show_home
 from pages.performances import show_performances
 from pages.songs_exemples import show_song_exemples
+from pages.long_audio import show_long_audio
 from PIL import Image
 
 import streamlit as st
@@ -68,13 +69,16 @@ with col_logo:
 st.title("Hackathon IA'Hack 2026")
 
 # Navigation
-tab1, tab2, tab3 = st.tabs(["🏠 Accueil", "🔊 Exemples sonors", "📊 Performances"])
+tab1, tab2, tab3, tab4 = st.tabs(["🐋 Identification d'un animal marin", "🌊 Analyse longue séquence", "🔊 Exemples sonors", "📊 Performances"])
 
 with tab1:
     show_home()
 
 with tab2:
-    show_song_exemples()
+    show_long_audio()
 
 with tab3:
+    show_song_exemples()
+
+with tab4:
     show_performances()

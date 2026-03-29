@@ -39,8 +39,8 @@ if __name__ == "__main__":
     X_test, y_test = Features.extract_features(test_dataset)
 
     # 3. Entraînement du modèle
-    # random_forest svm gradient_boosting logistic_regression knn
-    model = "gradient_boosting"
+    # Random Forest Support Vector Machine Gradient Boosting Logistic Regression KNN
+    model = "Gradient Boosting"
 
     classification = Classification(model)
 
@@ -128,8 +128,8 @@ if __name__ == "__main__":
     print(f"Classes : {sorted(set(y_train))}")
 
     # 3. Training
-    # random_forest svm gradient_boosting logistic_regression knn
-    model_name = "random_forest"
+    # Random Forest Support Vector Machine Gradient Boosting Logistic Regression KNN
+    model_name = "Random Forest"
     clf = Classification(model_name)
     clf.train(X_train, y_train)
 
