@@ -1,23 +1,39 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import streamlit as st
 
+import streamlit as st
 from config import Config
 from src.utils.detection import Detection
 from src.utils.pipeline import Classification
 from src.utils.spectrogram import Spectrogram
 
 
+def _pretty_label(label: str) -> str:
+    mapping = {
+        "Beluga_WhiteWhale": "Beluga",
+        "Fin_FinbackWhale": "Fin Whale",
+        "HumpbackWhale": "Humpback",
+        "SpermWhale": "Sperm Whale",
+        "White_sidedDolphin": "Dolphin",
+        "noise": "Noise",
+    }
+    return mapping.get(label, label.replace("_", " "))
+
+
 def _plot_timeline(detections, total_duration):
-    fig, ax = plt.subplots(figsize=(12, 2.8))
+    labels = sorted(set(d["label"] for d in detections)) if detections else []
+    n_labels = max(len(labels), 1)
+
+    fig_height = max(2.8, 1.2 + 0.7 * n_labels)
+    fig, ax = plt.subplots(figsize=(13, fig_height))
 
     if not detections:
         ax.set_xlim(0, max(total_duration, 1))
-        ax.set_ylim(0, 10)
+        ax.set_ylim(0, 1)
         ax.text(
-            total_duration / 2 if total_duration > 0 else 0.5,
-            5,
+            max(total_duration, 1) / 2,
+            0.5,
             "Aucune zone détectée",
             ha="center",
             va="center",
@@ -25,39 +41,63 @@ def _plot_timeline(detections, total_duration):
         )
         ax.set_yticks([])
         ax.set_xlabel("Temps (s)")
-        ax.set_title("Timeline des zones reconnues")
+        ax.set_title("Timeline des zones reconnues", loc="left", fontsize=14, pad=12)
+        ax.grid(axis="x", linestyle=":", alpha=0.35)
         plt.tight_layout()
         return fig
 
-    labels = sorted(set(d["label"] for d in detections))
-    y_positions = {label: i * 10 for i, label in enumerate(labels)}
+    color_map = {
+        "Beluga_WhiteWhale": "#4C78A8",
+        "Fin_FinbackWhale": "#F58518",
+        "HumpbackWhale": "#54A24B",
+        "SpermWhale": "#E45756",
+        "White_sidedDolphin": "#72B7B2",
+        "noise": "#B0B0B0",
+    }
+
+    y_gap = 12
+    bar_height = 7
+    y_positions = {label: i * y_gap for i, label in enumerate(labels)}
 
     for det in detections:
         start = det["start_sec"]
+        end = det["end_sec"]
         duration = det["duration_sec"]
         label = det["label"]
 
         ax.broken_barh(
             [(start, duration)],
-            (y_positions[label], 8),
+            (y_positions[label], bar_height),
+            facecolors=color_map.get(label, "#888888"),
+            edgecolors="none",
+            alpha=0.9,
         )
-        ax.text(
-            start + duration / 2,
-            y_positions[label] + 4,
-            label,
-            ha="center",
-            va="center",
-            fontsize=8,
-            color="white",
+
+        # n'afficher le texte que si la barre est assez large
+        if duration >= max(total_duration * 0.06, 0.8):
+            ax.text(
+                start + duration / 2,
+                y_positions[label] + bar_height / 2,
+                f"{duration:.1f}s",
+                ha="center",
+                va="center",
+                fontsize=8,
+                color="white",
+                fontweight="bold",
             )
 
-    ax.set_xlim(0, total_duration)
-    ax.set_ylim(0, max(y_positions.values()) + 10)
-    ax.set_yticks([y + 4 for y in y_positions.values()])
-    ax.set_yticklabels(list(y_positions.keys()))
+    ax.set_xlim(0, max(total_duration, 1))
+    ax.set_ylim(-2, max(y_positions.values()) + y_gap - 2)
+    ax.set_yticks([y + bar_height / 2 for y in y_positions.values()])
+    ax.set_yticklabels([_pretty_label(label) for label in labels], fontsize=10)
+
     ax.set_xlabel("Temps (s)")
-    ax.set_title("Timeline des zones reconnues")
-    ax.grid(axis="x", linestyle="--", alpha=0.5)
+    ax.set_title("Timeline des zones reconnues", loc="left", fontsize=14, pad=12)
+
+    ax.grid(axis="x", linestyle=":", alpha=0.35)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_visible(False)
 
     plt.tight_layout()
     return fig
@@ -83,7 +123,9 @@ def show_long_audio():
 
     col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 2])
     with col_btn2:
-        launch_analysis = st.button("🚀 Lancer l'analyse longue séquence", width="stretch")
+        launch_analysis = st.button(
+            "🚀 Lancer l'analyse longue séquence", width="stretch"
+        )
 
     if launch_analysis:
         if uploaded_file is None:
@@ -163,11 +205,26 @@ def show_long_audio():
             st.pyplot(fig)
 
             st.markdown("#### Zones reconnues")
+
             if detections:
-                for det in detections:
-                    st.write(
-                        f"- **{det['label']}** : {det['start_sec']:.2f}s → {det['end_sec']:.2f}s "
-                        f"(durée : {det['duration_sec']:.2f}s)"
-                    )
+                cols = st.columns(3)
+
+                for i, det in enumerate(detections):
+                    with cols[i % 3]:
+                        st.markdown(
+                            f"""
+                            <div style="
+                                margin-bottom:10px;
+                            ">
+                                <div style="font-weight:600; margin-bottom:6px;">
+                                    {_pretty_label(det['label'])}
+                                </div>
+                                <div><b>Début :</b> {det['start_sec']:.2f}s</div>
+                                <div><b>Fin :</b> {det['end_sec']:.2f}s</div>
+                                <div><b>Durée :</b> {det['duration_sec']:.2f}s</div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
             else:
                 st.info("Aucune zone reconnue après fusion et filtrage.")

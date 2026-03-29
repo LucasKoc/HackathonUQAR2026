@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import joblib
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
@@ -10,55 +12,58 @@ from sklearn.svm import SVC
 from config import Config
 from src.utils.audio import AudioUtils
 
-# ── Choix du modèle ───────────────────────────────────────────────────────────
-#
-#  On propose trois classifieurs. RandomForest est le défaut :
-#  rapide à entraîner, robuste, et donne de bonnes probabilités via predict_proba.
-#
-#  Support Vector Machine est souvent le meilleur sur peu de données mais plus lent.
-#  GradientBoosting est plus précis mais nettement plus lent à entraîner.
-# ─────────────────────────────────────────────────────────────────────────────
-
 
 class Classification:
     def __init__(self, model_name: str = "Random Forest"):
         self.pipeline = None
-        self.models = {
+        self.models = self._build_models()
+        self.build_pipeline(model_name)
+
+    @staticmethod
+    def _none_if_zero(value):
+        return None if value in (0, None) else value
+
+    def _build_models(self) -> dict:
+        rf = Config.get_model_params("Random Forest")
+        svm = Config.get_model_params("Support Vector Machine")
+        gb = Config.get_model_params("Gradient Boosting")
+        lr = Config.get_model_params("Logistic Regression")
+        knn = Config.get_model_params("KNN")
+
+        return {
             "Random Forest": RandomForestClassifier(
-                n_estimators=300,
-                max_depth=None,
-                min_samples_leaf=2,
-                class_weight="balanced",
+                n_estimators=rf["n_estimators"],
+                max_depth=self._none_if_zero(rf["max_depth"]),
+                min_samples_leaf=rf["min_samples_leaf"],
+                class_weight=rf["class_weight"],
                 random_state=Config.RANDOM_STATE,
-                n_jobs=-1,
+                n_jobs=rf["n_jobs"],
             ),
             "Support Vector Machine": SVC(
-                kernel="rbf",
-                C=10,
-                gamma="scale",
-                probability=True,
-                class_weight="balanced",
+                kernel=svm["kernel"],
+                C=svm["C"],
+                gamma=svm["gamma"],
+                probability=svm["probability"],
+                class_weight=svm["class_weight"],
                 random_state=Config.RANDOM_STATE,
             ),
             "Gradient Boosting": GradientBoostingClassifier(
-                n_estimators=200,
-                learning_rate=0.1,
-                max_depth=5,
+                n_estimators=gb["n_estimators"],
+                learning_rate=gb["learning_rate"],
+                max_depth=gb["max_depth"],
                 random_state=Config.RANDOM_STATE,
             ),
             "Logistic Regression": LogisticRegression(
-                max_iter=1000,
-                class_weight="balanced",
+                max_iter=lr["max_iter"],
+                class_weight=lr["class_weight"],
                 random_state=Config.RANDOM_STATE,
             ),
             "KNN": KNeighborsClassifier(
-                n_neighbors=5,
-                algorithm="auto",
-                n_jobs=-1,
+                n_neighbors=knn["n_neighbors"],
+                algorithm=knn["algorithm"],
+                n_jobs=knn["n_jobs"],
             ),
         }
-
-        self.build_pipeline(model_name)
 
     def build_pipeline(self, model_name: str) -> None:
         self.pipeline = Pipeline(
@@ -72,14 +77,17 @@ class Classification:
         self.pipeline.fit(X_train, y_train)
 
     @staticmethod
-    def save_model(pipeline: Pipeline, path: str, name: str = "model") -> None:
-        path = path + f"{name}.joblib"
-        joblib.dump(pipeline, path)
+    def save_model(pipeline: Pipeline, path: str | Path, name: str = "model") -> None:
+        path = Path(path)
+        path.mkdir(parents=True, exist_ok=True)
+        model_path = path / f"{name}.joblib"
+        joblib.dump(pipeline, model_path)
 
     @staticmethod
-    def load_model(path: str, name: str) -> Pipeline:
-        path = path + f"{name}.joblib"
-        return joblib.load(path)
+    def load_model(path: str | Path, name: str) -> Pipeline:
+        path = Path(path)
+        model_path = path / f"{name}.joblib"
+        return joblib.load(model_path)
 
     @staticmethod
     def predict(pipeline: Pipeline, audio_path: str) -> dict:
@@ -89,7 +97,6 @@ class Classification:
 
         label = pipeline.predict(X)[0]
 
-        # Utiliser pipeline.classes_ pour supporter P1 (5 classes) et P2 (6 classes)
         if hasattr(pipeline.named_steps["clf"], "predict_proba"):
             probas = pipeline.predict_proba(X)[0]
             classes = pipeline.classes_
@@ -100,8 +107,12 @@ class Classification:
         return {"label": label, "confidence": confidence}
 
     @staticmethod
-    def predict_all(audio_path: str, model_dir: str, audio_duration: float | None = None) -> dict:
-        Config.AUDIO_DURATION = audio_duration if audio_duration is not None else 5.0
+    def predict_all(
+        audio_path: str, model_dir: str, audio_duration: float | None = None
+    ) -> dict:
+        Config.AUDIO_DURATION = (
+            audio_duration if audio_duration is not None else Config.P1_AUDIO_DURATION
+        )
 
         temp = Classification()
         results = {}

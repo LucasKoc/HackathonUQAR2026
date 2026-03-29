@@ -1,9 +1,9 @@
 import time
 from pathlib import Path
 
-import streamlit as st
 from PIL import Image
 
+import streamlit as st
 from config import Config
 from src.utils.pipeline import Classification
 from src.utils.spectrogram import Spectrogram

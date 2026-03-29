@@ -2,8 +2,8 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import streamlit as st
 
+import streamlit as st
 from config import Config
 
 
@@ -60,14 +60,14 @@ def _model_card(title: str, report_path: Path, cm_path: Path):
     c3.metric("Weighted F1", f"{weighted_f1:.3f}")
 
     if cm_path.exists():
-        st.image(str(cm_path), width='stretch')
+        st.image(str(cm_path), width="stretch")
     else:
         st.info("Matrice de confusion introuvable")
 
     with st.expander("Voir le détail par classe"):
         df = _build_class_table(report)
         if not df.empty:
-            st.dataframe(df, width='stretch', hide_index=True)
+            st.dataframe(df, width="stretch", hide_index=True)
         else:
             st.info("Aucune donnée détaillée disponible.")
 
@@ -107,4 +107,4 @@ def show_performances():
             "Random Forest (P2)",
             p2_model_dir / "report_Random Forest_p2.json",
             p2_model_dir / "confusion_matrix_Random Forest_p2.png",
-            )
+        )

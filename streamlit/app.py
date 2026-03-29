@@ -6,9 +6,10 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 from pages.home import show_home
-from pages.performances import show_performances
-from pages.songs_exemples import show_song_exemples
 from pages.long_audio import show_long_audio
+from pages.performances import show_performances
+from pages.settings import show_settings
+from pages.songs_exemples import show_song_exemples
 from PIL import Image
 
 import streamlit as st
@@ -69,7 +70,15 @@ with col_logo:
 st.title("Hackathon IA'Hack 2026")
 
 # Navigation
-tab1, tab2, tab3, tab4 = st.tabs(["🐋 Identification d'un animal marin", "🌊 Analyse longue séquence", "🔊 Exemples sonors", "📊 Performances"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    [
+        "🐋 Identification d'un animal marin",
+        "🌊 Analyse longue séquence",
+        "🔊 Exemples sonors",
+        "📊 Performances",
+        "⚙️ Paramètres",
+    ]
+)
 
 with tab1:
     show_home()
@@ -82,3 +91,6 @@ with tab3:
 
 with tab4:
     show_performances()
+
+with tab5:
+    show_settings()
