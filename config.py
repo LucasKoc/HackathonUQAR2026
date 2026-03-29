@@ -1,9 +1,11 @@
 class Config:
     # Files Path
-    DATASET_PATH = "Data/Partie #1/Base de données/"
+    DATASET_PATH_P1 = "Data/Partie #1/Base de données/"
+    DATASET_PATH_P2 = "Data/Partie #2/Complément de base de données/"
+
     PATH_TRAIN = "train/"
     PATH_TEST = "test/"
-    PATH_MODEL = DATASET_PATH + "model/"
+    PATH_MODEL = DATASET_PATH_P1 + "model/"
 
     # Classes
     CLASS_NAMES = [
