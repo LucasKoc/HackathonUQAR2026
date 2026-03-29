@@ -23,7 +23,5 @@ class Files:
                 src_species = os.path.join(src, species)
                 dst_species = os.path.join(dst, species)
 
-                print(f"Moving {species} from {split} P1 to P2...")
-
                 # copytree copies the entire directory and its contents
                 shutil.copytree(src_species, dst_species, dirs_exist_ok=True)
