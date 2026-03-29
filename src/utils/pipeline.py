@@ -73,13 +73,13 @@ class Classification:
         self.pipeline.fit(X_train, y_train)
 
     @staticmethod
-    def save_model(pipeline: Pipeline, name: str = "model") -> None:
-        path = Config.PATH_MODEL + f"{name}.joblib"
+    def save_model(pipeline: Pipeline, path: str, name: str = "model") -> None:
+        path = path + f"{name}.joblib"
         joblib.dump(pipeline, path)
 
     @staticmethod
-    def load_model(name: str) -> Pipeline:
-        path = Config.PATH_MODEL + f"{name}.joblib"
+    def load_model(path: str, name: str) -> Pipeline:
+        path = path + f"{name}.joblib"
         return joblib.load(path)
 
     @staticmethod

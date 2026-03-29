@@ -5,7 +5,7 @@ class Config:
 
     PATH_TRAIN = "train/"
     PATH_TEST = "test/"
-    PATH_MODEL = DATASET_PATH_P1 + "model/"
+    PATH_MODEL = "model/"
 
     # Classes
     CLASS_NAMES = [
