@@ -23,7 +23,7 @@ from src.utils.audio import AudioUtils
 
 
 class Classification:
-    def __init__(self, model_name: str = "random_forest"):
+    def __init__(self, model_name: str = "random_forest", models: dict = None):
         self.pipeline = None
         self.models = {
             "random_forest": RandomForestClassifier(
@@ -55,7 +55,7 @@ class Classification:
                 n_neighbors=5,
                 algorithm="auto",
                 n_jobs=-1,
-            ),
+            ) if None else models
         }
 
         self.build_pipeline(model_name)
