@@ -20,7 +20,6 @@ if __name__ == "__main__":
     # Partie 1 du défi
     ###
 
-    """
     # P1 utilise des clips de 5 secondes
     Config.AUDIO_DURATION = 5.0
 
@@ -41,7 +40,7 @@ if __name__ == "__main__":
 
     # 3. Entraînement du modèle
     # random_forest svm gradient_boosting logistic_regression knn
-    model = "random_forest"
+    model = "gradient_boosting"
 
     classification = Classification(model)
 
@@ -85,7 +84,7 @@ if __name__ == "__main__":
             name=model, path=Config.DATASET_PATH_P1 + Config.PATH_MODEL
         )
         result = Classification.predict(
-            pipeline, Config.DATASET_PATH_P1 + Config.PATH_TEST + "videoplayback.m4a"
+            pipeline, "streamlit/assets/songs/animals/humpback_whale.mp3"
         )
 
         print(f"Espèce prédite : {result['label']}")
@@ -94,7 +93,6 @@ if __name__ == "__main__":
                 result["confidence"].items(), key=lambda item: item[1], reverse=True
             ):
                 print(f"  {species}: {proba:.2%}")
-    """
     ###
     # Partie 2 du défi
     ###
@@ -131,7 +129,7 @@ if __name__ == "__main__":
 
     # 3. Training
     # random_forest svm gradient_boosting logistic_regression knn
-    model_name = "svm"
+    model_name = "random_forest"
     clf = Classification(model_name)
     clf.train(X_train, y_train)
 
