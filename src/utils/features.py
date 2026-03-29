@@ -1,13 +1,10 @@
 import warnings
 from concurrent.futures import ProcessPoolExecutor
 
-import librosa
 import numpy as np
 from tqdm import tqdm
 
 from src.utils.audio import AudioUtils
-
-from config import Config
 
 warnings.filterwarnings("ignore", category=UserWarning, module="librosa")
 

@@ -35,6 +35,6 @@ class Config:
 
     # Detection settings
     CONFIDENCE_THRESHOLD = 0.5
-        # RMS min (filtre les fenêtres silencieuses)
+    # RMS min (filtre les fenêtres silencieuses)
     ENERGY_THRESHOLD = 0.005
     MIN_DETECTION_SEC = 0.8

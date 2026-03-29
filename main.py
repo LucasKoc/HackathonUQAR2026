@@ -1,6 +1,7 @@
 """
 Hackathon IA'Hack 2026 (hackathon.uqar.ca)
 """
+
 import glob
 import os
 from os import mkdir
@@ -92,7 +93,6 @@ if __name__ == "__main__":
     ###
     # Partie 2 du défi
     ###
-    Config.AUDIO_DURATION = Config.WINDOW_SIZE_SEC
 
     # 0.1. Copier la data de la Partie #1 vers la Partie #2
     Files.migration_p2()
@@ -112,6 +112,7 @@ if __name__ == "__main__":
     print(f"Test  : {len(test_dataset)} fichiers")
 
     # 2. Extraction des features
+    Config.AUDIO_DURATION = Config.WINDOW_SIZE_SEC
     X_train, y_train = Features.extract_features(train_dataset)
     X_test, y_test = Features.extract_features(test_dataset)
 
@@ -122,18 +123,17 @@ if __name__ == "__main__":
     # 3. Training
     # random_forest svm gradient_boosting logistic_regression knn
     model_name = "random_forest"
-    classification = Classification(model_name)
-    classification.train(X_train, y_train)
+    clf = Classification(model_name)
+    clf.train(X_train, y_train)
 
     # Sauvegarder
     Classification.save_model(
-        classification.pipeline,
+        clf.pipeline,
         name=f"{model_name}_p2",
         path=Config.DATASET_PATH_P2 + Config.PATH_MODEL,
     )
 
-    # Charger le modèle enregistré
-    classification = Classification.load_model(
+    pipeline_p2 = Classification.load_model(
         name=f"{model_name}_p2",
         path=Config.DATASET_PATH_P2 + Config.PATH_MODEL,
     )
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     # 4. Évaluation
 
     results = Evaluate.evaluate(
-        classification,
+        pipeline_p2,
         X_test,
         y_test,
         model_name,
@@ -155,8 +155,8 @@ if __name__ == "__main__":
         results["confusion_matrix"],
         class_names=Config.CLASS_NAMES_P2,
         save_path=Config.DATASET_PATH_P2
-                  + Config.PATH_MODEL
-                  + f"confusion_matrix_{model_name}_p2.png",
+        + Config.PATH_MODEL
+        + f"confusion_matrix_{model_name}_p2.png",
         show_plot=False,
     )
 
@@ -165,12 +165,14 @@ if __name__ == "__main__":
     annotations_dir = Config.DATASET_PATH_P2_LS + Config.PATH_ANNOTATIONS
     audio_dir = Config.DATASET_PATH_P2_LS + Config.PATH_AUDIO
 
-    # Trouver tous les fichiers audio longs
     audio_files = sorted(glob.glob(os.path.join(audio_dir, "*.wav")))
 
     print(f"\n{'═' * 60}")
     print(f"  Détection sur {len(audio_files)} séquence(s) longue(s)")
     print(f"  Fenêtre : {Config.WINDOW_SIZE_SEC}s | Hop : {Config.HOP_SIZE_SEC}s")
+    print(f"  Seuil confiance : {Config.CONFIDENCE_THRESHOLD}")
+    print(f"  Seuil énergie   : {Config.ENERGY_THRESHOLD}")
+    print(f"  Durée min       : {Config.MIN_DETECTION_SEC}s")
     print(f"{'═' * 60}")
 
     all_iou_global = []
@@ -183,12 +185,15 @@ if __name__ == "__main__":
         print(f"  Séquence : {seq_name}")
         print(f"{'─' * 40}")
 
-        # 5.1. Détection
+        # 5.1. Détection avec les seuils configurés
         detections, raw_preds, signal = Detection.detect(
             audio_path,
-            classification,
+            pipeline_p2,
             window_size_sec=Config.WINDOW_SIZE_SEC,
             hop_size_sec=Config.HOP_SIZE_SEC,
+            confidence_threshold=Config.CONFIDENCE_THRESHOLD,
+            energy_threshold=Config.ENERGY_THRESHOLD,
+            min_duration_sec=Config.MIN_DETECTION_SEC,
         )
 
         total_duration = len(signal) / Config.AUDIO_SAMPLE_RATE
@@ -199,15 +204,13 @@ if __name__ == "__main__":
         for det in detections:
             print(
                 f"    [{det['start_sec']:.1f}s - {det['end_sec']:.1f}s] "
-                f"→ {det['label']} ({det['duration_sec']:.1f}s)"
+                f"-> {det['label']} ({det['duration_sec']:.1f}s)"
             )
 
         # 5.2. Évaluation IoU (si annotation disponible)
         if os.path.exists(csv_path):
             annotations = Detection.load_annotations(csv_path)
-            iou_results = Detection.compute_iou(
-                detections, annotations, total_duration
-            )
+            iou_results = Detection.compute_iou(detections, annotations, total_duration)
 
             print(f"\n  IoU globale : {iou_results['iou_global']:.4f}")
             for cls, iou_val in iou_results["iou_per_class"].items():
@@ -225,9 +228,7 @@ if __name__ == "__main__":
             Detection.export_results_json(
                 detections,
                 iou_results,
-                Config.DATASET_PATH_P2
-                + Config.PATH_MODEL
-                + f"results_{seq_name}.json",
+                Config.DATASET_PATH_P2 + Config.PATH_MODEL + f"results_{seq_name}.json",
             )
         else:
             print(f"!! Pas d'annotation trouvée pour {seq_name}")
