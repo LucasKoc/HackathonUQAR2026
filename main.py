@@ -20,7 +20,11 @@ if __name__ == "__main__":
     ###
 
     # 0. Créer dossier model
-    mkdir(Path(Config.DATASET_PATH_P1 + Config.PATH_MODEL)) if not Path(Config.DATASET_PATH_P1 + Config.PATH_MODEL).exists() else None
+    (
+        mkdir(Path(Config.DATASET_PATH_P1 + Config.PATH_MODEL))
+        if not Path(Config.DATASET_PATH_P1 + Config.PATH_MODEL).exists()
+        else None
+    )
 
     # 1. Chargement des données
     train_dataset = AudioDataset(Config.DATASET_PATH_P1 + Config.PATH_TRAIN)
@@ -40,21 +44,30 @@ if __name__ == "__main__":
     for model in classification.models:
         pipeline = Classification(model)
         pipeline.train(X_train, y_train)
-        Classification.save_model(pipeline.pipeline, name=model, path=Config.DATASET_PATH_P1 + Config.PATH_MODEL)
+        Classification.save_model(
+            pipeline.pipeline,
+            name=model,
+            path=Config.DATASET_PATH_P1 + Config.PATH_MODEL,
+        )
         del pipeline
-        pipeline = Classification.load_model(name=model, path=Config.DATASET_PATH_P1 + Config.PATH_MODEL)
+        pipeline = Classification.load_model(
+            name=model, path=Config.DATASET_PATH_P1 + Config.PATH_MODEL
+        )
 
         # 4. Evaluation
         results = Evaluate.evaluate(pipeline, X_test, y_test, model)
         Evaluate.export_report_json(
-            results["report_dict"], Config.DATASET_PATH_P1 + Config.PATH_MODEL + f"/report_{model}.json"
+            results["report_dict"],
+            Config.DATASET_PATH_P1 + Config.PATH_MODEL + f"/report_{model}.json",
         )
 
         # 5. Visualisations
         Evaluate.plot_confusion_matrix(
             results["confusion_matrix"],
             save_path=str(
-                Config.DATASET_PATH_P1 + Config.PATH_MODEL + f"confusion_matrix_{model}.png",
+                Config.DATASET_PATH_P1
+                + Config.PATH_MODEL
+                + f"confusion_matrix_{model}.png",
             ),
             show_plot=False,
         )
@@ -64,7 +77,9 @@ if __name__ == "__main__":
         ###
 
         # Prédiction sur un fichier audio
-        pipeline = Classification.load_model(name=model, path=Config.DATASET_PATH_P1 + Config.PATH_MODEL)
+        pipeline = Classification.load_model(
+            name=model, path=Config.DATASET_PATH_P1 + Config.PATH_MODEL
+        )
         result = Classification.predict(
             pipeline, Config.DATASET_PATH_P1 + Config.PATH_TEST + "videoplayback.m4a"
         )
@@ -84,9 +99,12 @@ if __name__ == "__main__":
     Config.CLASS_NAMES_P2 = Config.CLASS_NAMES + ["noise"]
 
     # 0.2. Créer dossier model
-    mkdir(Path(Config.DATASET_PATH_P2 + Config.PATH_MODEL)) if not Path(Config.DATASET_PATH_P2 + Config.PATH_MODEL).exists() else None
+    (
+        mkdir(Path(Config.DATASET_PATH_P2 + Config.PATH_MODEL))
+        if not Path(Config.DATASET_PATH_P2 + Config.PATH_MODEL).exists()
+        else None
+    )
 
     # 1. Chargement des données
     train_dataset = AudioDataset(Config.DATASET_PATH_P1 + Config.PATH_TRAIN)
     test_dataset = AudioDataset(Config.DATASET_PATH_P1 + Config.PATH_TEST)
-

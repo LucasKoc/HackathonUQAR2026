@@ -18,7 +18,7 @@ class Files:
             for species in species_folders:
                 # Check if species from P1 are already in P2
                 if os.path.exists(os.path.join(dst, species)):
-                  continue
+                    continue
 
                 src_species = os.path.join(src, species)
                 dst_species = os.path.join(dst, species)
