@@ -1,16 +1,10 @@
 """
 Hackathon IA'Hack 2026 (hackathon.uqar.ca)
 """
-
+import glob
 import os
-import shutil
 from os import mkdir
 from pathlib import Path
-
-import librosa
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 from config import Config
 from src.utils.dataset import AudioDataset
@@ -21,7 +15,6 @@ from src.utils.files import Files
 from src.utils.pipeline import Classification
 
 if __name__ == "__main__":
-    """
     ###
     # Partie 1 du défi
     ###
@@ -82,7 +75,6 @@ if __name__ == "__main__":
         ###
         # Prédiction d'un fichier audio
         ###
-
         # Prédiction sur un fichier audio
         pipeline = Classification.load_model(
             name=model, path=Config.DATASET_PATH_P1 + Config.PATH_MODEL
@@ -97,10 +89,11 @@ if __name__ == "__main__":
                 result["confidence"].items(), key=lambda item: item[1], reverse=True
             ):
                 print(f"  {species}: {proba:.2%}")
-    """
     ###
     # Partie 2 du défi
     ###
+    Config.AUDIO_DURATION = Config.WINDOW_SIZE_SEC
+
     # 0.1. Copier la data de la Partie #1 vers la Partie #2
     Files.migration_p2()
 
@@ -112,61 +105,137 @@ if __name__ == "__main__":
     )
 
     # 1. Chargement des données
-    train_dataset = AudioDataset(Config.DATASET_PATH_P1 + Config.PATH_TRAIN)
-    test_dataset = AudioDataset(Config.DATASET_PATH_P1 + Config.PATH_TEST)
+    train_dataset = AudioDataset(Config.DATASET_PATH_P2 + Config.PATH_TRAIN)
+    test_dataset = AudioDataset(Config.DATASET_PATH_P2 + Config.PATH_TEST)
 
-    train_files = [record.path for record in train_dataset.records]
-    test_files = [record.path for record in test_dataset.records]
-    train_labels = [record.label for record in train_dataset.records]
-    test_labels = [record.label for record in test_dataset.records]
+    print(f"Train : {len(train_dataset)} fichiers")
+    print(f"Test  : {len(test_dataset)} fichiers")
 
-    X_train, y_train_labels, group_train = Features.build_window_dataset(
-        train_files, train_labels, window_size_sec=Config.WINDOW_SIZE_SEC, hop_size_sec=Config.HOP_SIZE_SEC)
+    # 2. Extraction des features
+    X_train, y_train = Features.extract_features(train_dataset)
+    X_test, y_test = Features.extract_features(test_dataset)
 
-    X_test, y_test_labels, _ = Features.build_window_dataset(
-        test_files, test_labels, window_size_sec=Config.WINDOW_SIZE_SEC, hop_size_sec=Config.HOP_SIZE_SEC)
+    print(f"Features train : {X_train.shape}")
+    print(f"Features test  : {X_test.shape}")
+    print(f"Classes : {sorted(set(y_train))}")
 
-    # Encoder & Scaler
-    le = LabelEncoder()
-    le.fit(list(set(train_labels + test_labels)))
-    y_train = le.transform(y_train_labels)
-    y_test = le.transform(y_test_labels)
+    # 3. Training
+    # random_forest svm gradient_boosting logistic_regression knn
+    model_name = "random_forest"
+    classification = Classification(model_name)
+    classification.train(X_train, y_train)
 
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
-    clf = RandomForestClassifier(
-        n_estimators=200,
-        random_state=Config.RANDOM_STATE,
-        class_weight='balanced'
-    )
-    clf.fit(X_train_scaled, y_train)
-
-    y_pred = clf.predict(X_test_scaled)
-    print(f"Accuracy : {accuracy_score(y_test, y_pred):.2%}")
-    print(classification_report(y_test, y_pred, target_names=le.classes_))
-
-    # Test sur un fichier
-    audio_path = "sequence_07.wav"
-    audio, sr = librosa.load(Config.DATASET_PATH_P2_LS + Config.PATH_AUDIO + audio_path, sr=16000)
-    print(f"Audio chargé : {len(audio) / sr:.2f}s, {sr} Hz")
-
-    detections = Detection.sliding_window_detection(
-        audio, sr, clf, scaler, le,
-        window_size_sec=Config.WINDOW_SIZE_SEC,
-        hop_size_sec=Config.HOP_SIZE_SEC,
-        confidence_threshold=0.4,
-        energy_threshold=None
+    # Sauvegarder
+    Classification.save_model(
+        classification.pipeline,
+        name=f"{model_name}_p2",
+        path=Config.DATASET_PATH_P2 + Config.PATH_MODEL,
     )
 
-    merged_events = Detection.merge_consecutive_same_label(detections)
+    # Charger le modèle enregistré
+    classification = Classification.load_model(
+        name=f"{model_name}_p2",
+        path=Config.DATASET_PATH_P2 + Config.PATH_MODEL,
+    )
 
-    # Affichage
-    print(f"Nombre de détections brutes : {len(detections)}")
-    print(f"Nombre après fusion : {len(merged_events)}")
-    for e in merged_events:
-        duration_ms = (e['end'] - e['start']) * 1000
-        print(f"[{e['start']:.3f}s - {e['end']:.3f}s] {e['label']:15s} "
-              f"({duration_ms:.0f}ms, confiance: {e['confidence']:.0%}, {e['count']} fenêtres)")
-        # f"{e['probas']}")
+    # 4. Évaluation
+
+    results = Evaluate.evaluate(
+        classification,
+        X_test,
+        y_test,
+        model_name,
+        class_names=Config.CLASS_NAMES_P2,
+    )
+    Evaluate.export_report_json(
+        results["report_dict"],
+        Config.DATASET_PATH_P2 + Config.PATH_MODEL + f"report_{model_name}_p2.json",
+    )
+    Evaluate.plot_confusion_matrix(
+        results["confusion_matrix"],
+        class_names=Config.CLASS_NAMES_P2,
+        save_path=Config.DATASET_PATH_P2
+                  + Config.PATH_MODEL
+                  + f"confusion_matrix_{model_name}_p2.png",
+        show_plot=False,
+    )
+
+    # 5. Détection sur les longues séquences
+
+    annotations_dir = Config.DATASET_PATH_P2_LS + Config.PATH_ANNOTATIONS
+    audio_dir = Config.DATASET_PATH_P2_LS + Config.PATH_AUDIO
+
+    # Trouver tous les fichiers audio longs
+    audio_files = sorted(glob.glob(os.path.join(audio_dir, "*.wav")))
+
+    print(f"\n{'═' * 60}")
+    print(f"  Détection sur {len(audio_files)} séquence(s) longue(s)")
+    print(f"  Fenêtre : {Config.WINDOW_SIZE_SEC}s | Hop : {Config.HOP_SIZE_SEC}s")
+    print(f"{'═' * 60}")
+
+    all_iou_global = []
+
+    for audio_path in audio_files:
+        seq_name = Path(audio_path).stem
+        csv_path = os.path.join(annotations_dir, f"{seq_name}.csv")
+
+        print(f"\n{'─' * 40}")
+        print(f"  Séquence : {seq_name}")
+        print(f"{'─' * 40}")
+
+        # 5.1. Détection
+        detections, raw_preds, signal = Detection.detect(
+            audio_path,
+            classification,
+            window_size_sec=Config.WINDOW_SIZE_SEC,
+            hop_size_sec=Config.HOP_SIZE_SEC,
+        )
+
+        total_duration = len(signal) / Config.AUDIO_SAMPLE_RATE
+        print(f"  Durée audio     : {total_duration:.1f}s")
+        print(f"  Fenêtres brutes : {len(raw_preds)}")
+        print(f"  Détections      : {len(detections)}")
+
+        for det in detections:
+            print(
+                f"    [{det['start_sec']:.1f}s - {det['end_sec']:.1f}s] "
+                f"→ {det['label']} ({det['duration_sec']:.1f}s)"
+            )
+
+        # 5.2. Évaluation IoU (si annotation disponible)
+        if os.path.exists(csv_path):
+            annotations = Detection.load_annotations(csv_path)
+            iou_results = Detection.compute_iou(
+                detections, annotations, total_duration
+            )
+
+            print(f"\n  IoU globale : {iou_results['iou_global']:.4f}")
+            for cls, iou_val in iou_results["iou_per_class"].items():
+                print(f"    {cls:25s} : {iou_val:.4f}")
+
+            all_iou_global.append(iou_results["iou_global"])
+
+            # Exporter les résultats
+            Detection.export_detections_csv(
+                detections,
+                Config.DATASET_PATH_P2
+                + Config.PATH_MODEL
+                + f"detections_{seq_name}.csv",
+            )
+            Detection.export_results_json(
+                detections,
+                iou_results,
+                Config.DATASET_PATH_P2
+                + Config.PATH_MODEL
+                + f"results_{seq_name}.json",
+            )
+        else:
+            print(f"!! Pas d'annotation trouvée pour {seq_name}")
+
+    # 6. Résumé global
+
+    if all_iou_global:
+        mean_iou = sum(all_iou_global) / len(all_iou_global)
+        print(f"\n{'═' * 60}")
+        print(f"  IoU moyenne sur {len(all_iou_global)} séquence(s) : {mean_iou:.4f}")
+        print(f"{'═' * 60}")

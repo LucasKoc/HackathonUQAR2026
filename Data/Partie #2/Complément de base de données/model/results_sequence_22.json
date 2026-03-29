@@ -1,0 +1,29 @@
+{
+  "num_events": 3,
+  "iou_global": 0.1345,
+  "iou_per_class": {
+    "Fin_FinbackWhale": 0.6847290640394089,
+    "HumpbackWhale": 0.0,
+    "White_sidedDolphin": 0.0
+  },
+  "events": [
+    {
+      "label": "HumpbackWhale",
+      "start_sec": 88.5,
+      "end_sec": 91.5,
+      "duration_sec": 3.0
+    },
+    {
+      "label": "Fin_FinbackWhale",
+      "start_sec": 90.0,
+      "end_sec": 92.0,
+      "duration_sec": 2.0
+    },
+    {
+      "label": "HumpbackWhale",
+      "start_sec": 90.5,
+      "end_sec": 93.0,
+      "duration_sec": 2.5
+    }
+  ]
+}

@@ -12,18 +12,22 @@ from config import Config
 class Evaluate:
     @staticmethod
     def evaluate(
-        pipeline: Pipeline, X_test: np.ndarray, y_test: np.ndarray, model: str
+        pipeline: Pipeline,
+        X_test: np.ndarray,
+        y_test: np.ndarray,
+        model: str,
+        class_names: list = None,
     ) -> dict:
-        """
-        Calcule les métriques d'évaluation et affiche le rapport.
-        """
+        if class_names is None:
+            class_names = Config.CLASS_NAMES
+
         y_pred = pipeline.predict(X_test)
 
         acc = accuracy_score(y_test, y_pred)
         report = classification_report(
             y_test,
             y_pred,
-            target_names=Config.CLASS_NAMES,
+            target_names=class_names,
             digits=3,
         )
         cm = confusion_matrix(y_test, y_pred)
@@ -33,30 +37,33 @@ class Evaluate:
         print(f"{'─' * 60}")
         print(report)
 
-        report_str = classification_report(
-            y_test, y_pred, target_names=Config.CLASS_NAMES, digits=3
-        )
         report_dict = classification_report(
-            y_test, y_pred, target_names=Config.CLASS_NAMES, output_dict=True
+            y_test, y_pred, target_names=class_names, output_dict=True
         )
 
         return {
             "accuracy": acc,
-            "report": report_str,
+            "report": report,
             "report_dict": report_dict,
             "confusion_matrix": cm,
         }
 
     @staticmethod
     def plot_confusion_matrix(
-        cm: np.ndarray, save_path: str | None = None, show_plot: bool = True
+        cm: np.ndarray,
+        class_names: list = None,
+        save_path: str | None = None,
+        show_plot: bool = True,
     ) -> None:
         """
         Affiche la matrice de confusion normalisée avec seaborn.
         """
+        if class_names is None:
+            class_names = Config.CLASS_NAMES
+
         cm_norm = cm.astype(float) / cm.sum(axis=1, keepdims=True)
 
-        short_names = [n.replace("_", "\n") for n in Config.CLASS_NAMES]
+        short_names = [n.replace("_", "\n") for n in class_names]
 
         fig, ax = plt.subplots(figsize=(8, 6))
         sns.heatmap(

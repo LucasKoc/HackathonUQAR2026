@@ -23,7 +23,7 @@ from src.utils.audio import AudioUtils
 
 
 class Classification:
-    def __init__(self, model_name: str = "random_forest", models: dict = None):
+    def __init__(self, model_name: str = "random_forest"):
         self.pipeline = None
         self.models = {
             "random_forest": RandomForestClassifier(
@@ -49,13 +49,15 @@ class Classification:
                 random_state=Config.RANDOM_STATE,
             ),
             "logistic_regression": LogisticRegression(
-                max_iter=1000, class_weight="balanced", random_state=Config.RANDOM_STATE
+                max_iter=1000,
+                class_weight="balanced",
+                random_state=Config.RANDOM_STATE,
             ),
             "knn": KNeighborsClassifier(
                 n_neighbors=5,
                 algorithm="auto",
                 n_jobs=-1,
-            ) if None else models
+            ),
         }
 
         self.build_pipeline(model_name)
@@ -91,11 +93,11 @@ class Classification:
 
         label = pipeline.predict(X)[0]
 
+        # Utiliser pipeline.classes_ pour supporter P1 (5 classes) et P2 (6 classes)
         if hasattr(pipeline.named_steps["clf"], "predict_proba"):
             probas = pipeline.predict_proba(X)[0]
-            confidence = {
-                name: round(float(p), 4) for name, p in zip(Config.CLASS_NAMES, probas)
-            }
+            classes = pipeline.classes_
+            confidence = {name: round(float(p), 4) for name, p in zip(classes, probas)}
         else:
             confidence = None
 

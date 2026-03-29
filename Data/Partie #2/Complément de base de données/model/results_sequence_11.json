@@ -1,0 +1,17 @@
+{
+  "num_events": 1,
+  "iou_global": 0.1417,
+  "iou_per_class": {
+    "HumpbackWhale": 0.576,
+    "SpermWhale": 0.0,
+    "White_sidedDolphin": 0.0
+  },
+  "events": [
+    {
+      "label": "HumpbackWhale",
+      "start_sec": 94.0,
+      "end_sec": 96.5,
+      "duration_sec": 2.5
+    }
+  ]
+}
