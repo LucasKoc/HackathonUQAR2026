@@ -1,10 +1,10 @@
 {
   "num_events": 6,
-  "iou_global": 0.1983,
+  "iou_global": 0.3171,
   "iou_per_class": {
-    "Beluga_WhiteWhale": 0.0,
-    "HumpbackWhale": 0.34630659253375695,
-    "SpermWhale": 0.09172932330827067,
+    "Beluga_WhiteWhale": 0.1615598885793872,
+    "HumpbackWhale": 0.23097112860892388,
+    "SpermWhale": 0.0,
     "White_sidedDolphin": 0.0
   },
   "events": [
@@ -15,34 +15,34 @@
       "duration_sec": 3.0
     },
     {
-      "label": "HumpbackWhale",
-      "start_sec": 174.5,
-      "end_sec": 176.5,
+      "label": "Beluga_WhiteWhale",
+      "start_sec": 126.5,
+      "end_sec": 128.5,
       "duration_sec": 2.0
     },
     {
       "label": "HumpbackWhale",
-      "start_sec": 181.5,
+      "start_sec": 173.5,
+      "end_sec": 177.0,
+      "duration_sec": 3.5
+    },
+    {
+      "label": "HumpbackWhale",
+      "start_sec": 179.0,
       "end_sec": 183.5,
-      "duration_sec": 2.0
+      "duration_sec": 4.5
     },
     {
-      "label": "SpermWhale",
-      "start_sec": 183.0,
-      "end_sec": 185.0,
-      "duration_sec": 2.0
-    },
-    {
-      "label": "SpermWhale",
-      "start_sec": 186.0,
-      "end_sec": 188.0,
-      "duration_sec": 2.0
+      "label": "Beluga_WhiteWhale",
+      "start_sec": 184.0,
+      "end_sec": 187.0,
+      "duration_sec": 3.0
     },
     {
       "label": "HumpbackWhale",
-      "start_sec": 188.5,
+      "start_sec": 186.0,
       "end_sec": 193.0,
-      "duration_sec": 4.5
+      "duration_sec": 7.0
     }
   ]
 }

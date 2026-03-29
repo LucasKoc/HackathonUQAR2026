@@ -84,7 +84,7 @@ class Classification:
 
     @staticmethod
     def predict(pipeline: Pipeline, audio_path: str) -> dict:
-        signal = AudioUtils.load_audio(audio_path)
+        signal = AudioUtils.load_audio_full(audio_path)
         features = AudioUtils.extract_features(signal)
         # (1, n_features) — batch de 1
         X = features.reshape(1, -1)

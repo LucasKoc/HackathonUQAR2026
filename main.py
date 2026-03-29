@@ -20,6 +20,9 @@ if __name__ == "__main__":
     # Partie 1 du défi
     ###
 
+    # P1 utilise des clips de 5 secondes
+    Config.AUDIO_DURATION = 5.0
+
     # 0. Créer dossier model
     (
         mkdir(Path(Config.DATASET_PATH_P1 + Config.PATH_MODEL))
@@ -94,6 +97,10 @@ if __name__ == "__main__":
     # Partie 2 du défi
     ###
 
+    # P2 utilise des fenêtres de WINDOW_SIZE_SEC secondes
+    # AUDIO_DURATION DOIT matcher pour que les features soient compatibles
+    Config.AUDIO_DURATION = Config.WINDOW_SIZE_SEC
+
     # 0.1. Copier la data de la Partie #1 vers la Partie #2
     Files.migration_p2()
 
@@ -104,7 +111,7 @@ if __name__ == "__main__":
         else None
     )
 
-    # 1. Chargement des données
+    # 1. Chargement des données P2 (6 classes : 5 species + noise)
     train_dataset = AudioDataset(Config.DATASET_PATH_P2 + Config.PATH_TRAIN)
     test_dataset = AudioDataset(Config.DATASET_PATH_P2 + Config.PATH_TEST)
 

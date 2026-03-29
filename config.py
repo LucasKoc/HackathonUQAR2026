@@ -24,17 +24,20 @@ class Config:
     # Audio settings
     AUDIO_SAMPLE_RATE = 44100
     AUDIO_N_MFCC = 13
-    AUDIO_DURATION = 5.0
-
-    # Classification settings
-    RANDOM_STATE = 42
 
     # P2 Audio settings
     WINDOW_SIZE_SEC = 2.0
     HOP_SIZE_SEC = 0.5
 
+    # AUDIO_DURATION DOIT correspondre à WINDOW_SIZE_SEC
+    # pour que les features d'entraînement et de détection soient compatibles.
+    # Pour la P1, on le redéfinit à 5.0 dans main.py avant l'extraction.
+    AUDIO_DURATION = WINDOW_SIZE_SEC
+
+    # Classification settings
+    RANDOM_STATE = 42
+
     # Detection settings
-    CONFIDENCE_THRESHOLD = 0.5
-    # RMS min (filtre les fenêtres silencieuses)
-    ENERGY_THRESHOLD = 0.005
+    CONFIDENCE_THRESHOLD = 0.3
+    ENERGY_THRESHOLD = 0.001
     MIN_DETECTION_SEC = 0.8

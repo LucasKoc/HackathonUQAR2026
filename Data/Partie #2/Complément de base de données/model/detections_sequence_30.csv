@@ -1,9 +1,11 @@
 animal,start_sec,end_sec,duration_sec
-HumpbackWhale,14.5,18.5,4.0
-SpermWhale,17.0,19.0,2.0
+HumpbackWhale,15.0,19.0,4.0
+HumpbackWhale,70.5,72.5,2.0
+Beluga_WhiteWhale,71.0,73.5,2.5
 HumpbackWhale,79.0,83.0,4.0
-HumpbackWhale,127.5,130.5,3.0
-Beluga_WhiteWhale,129.0,131.0,2.0
-HumpbackWhale,169.0,173.5,4.5
-HumpbackWhale,175.5,178.0,2.5
+Beluga_WhiteWhale,126.5,129.5,3.0
+HumpbackWhale,128.0,130.0,2.0
+Beluga_WhiteWhale,128.5,131.5,3.0
+Beluga_WhiteWhale,136.0,139.0,3.0
+HumpbackWhale,168.5,178.0,9.5
 HumpbackWhale,196.0,202.0,6.0
