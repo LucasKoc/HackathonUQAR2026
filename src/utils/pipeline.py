@@ -49,10 +49,13 @@ class Classification:
                 random_state=Config.RANDOM_STATE,
             ),
             "logistic_regression": LogisticRegression(
-                max_iter=1000,
-                class_weight="balanced",
-                random_state=Config.RANDOM_STATE
-            )
+                max_iter=1000, class_weight="balanced", random_state=Config.RANDOM_STATE
+            ),
+            "knn": KNeighborsClassifier(
+                n_neighbors=5,
+                algorithm="auto",
+                n_jobs=-1,
+            ),
         }
 
         self.build_pipeline(model_name)

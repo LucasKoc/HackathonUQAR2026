@@ -3,8 +3,7 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from sklearn.metrics import (accuracy_score, classification_report,
-                             confusion_matrix)
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.pipeline import Pipeline
 
 from config import Config
@@ -12,7 +11,9 @@ from config import Config
 
 class Evaluate:
     @staticmethod
-    def evaluate(pipeline: Pipeline, X_test: np.ndarray, y_test: np.ndarray) -> dict:
+    def evaluate(
+        pipeline: Pipeline, X_test: np.ndarray, y_test: np.ndarray, model: str
+    ) -> dict:
         """
         Calcule les métriques d'évaluation et affiche le rapport.
         """
@@ -27,7 +28,7 @@ class Evaluate:
         )
         cm = confusion_matrix(y_test, y_pred)
 
-        print(f"\n{'─' * 60}")
+        print(f"\n{'─' * 20} Modèle : {model} {'─' * 20}")
         print(f"  Accuracy : {acc:.3f}  ({acc * 100:.1f} %)")
         print(f"{'─' * 60}")
         print(report)
@@ -47,7 +48,9 @@ class Evaluate:
         }
 
     @staticmethod
-    def plot_confusion_matrix(cm: np.ndarray, save_path: str | None = None) -> None:
+    def plot_confusion_matrix(
+        cm: np.ndarray, save_path: str | None = None, show_plot: bool = True
+    ) -> None:
         """
         Affiche la matrice de confusion normalisée avec seaborn.
         """
@@ -73,13 +76,15 @@ class Evaluate:
 
         if save_path:
             plt.savefig(save_path, dpi=150)
-            print(f"Matrice sauvegardée → {save_path}")
 
-        plt.show()
+        plt.show() if show_plot else None
 
     @staticmethod
     def plot_feature_importance(
-        pipeline: Pipeline, top_n: int = 20, save_path: str | None = None
+        pipeline: Pipeline,
+        top_n: int = 20,
+        save_path: str | None = None,
+        show_plot: bool = True,
     ) -> None:
         """
         Affiche les N features les plus importantes (Random Forest uniquement).
@@ -104,7 +109,7 @@ class Evaluate:
         if save_path:
             plt.savefig(save_path, dpi=150)
 
-        plt.show()
+        plt.show() if show_plot else None
 
     @staticmethod
     def export_report_json(report_dict: dict, save_path: str) -> None:

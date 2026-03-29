@@ -1,7 +1,11 @@
+import warnings
+
 import librosa
 import numpy as np
 
 from config import Config
+
+warnings.filterwarnings("ignore")
 
 
 class AudioUtils:
@@ -21,8 +25,6 @@ class AudioUtils:
 
     @staticmethod
     def extract_features(signal):
-        n_fft = min(2048, len(signal))
-        print("HIT") if len(signal) <= 2048 else None
         mfccs = np.mean(
             librosa.feature.mfcc(
                 y=signal, sr=Config.AUDIO_SAMPLE_RATE, n_mfcc=Config.AUDIO_N_MFCC

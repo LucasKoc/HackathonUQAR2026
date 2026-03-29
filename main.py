@@ -24,42 +24,48 @@ if __name__ == "__main__":
     X_test, y_test = Features.extract_features(test_dataset)
 
     # 3. Entraînement du modèle
-    # random_forest svm gradient_boosting
-    model = "logistic_regression"
-    pipeline = Classification(model)
-    pipeline.train(X_train, y_train)
-    Classification.save_model(pipeline.pipeline, name=model)
-    del pipeline
-    pipeline = Classification.load_model(name=model)
+    # random_forest svm gradient_boosting logistic_regression knn
+    model = "random_forest"
 
-    # 4. Evaluation
-    results = Evaluate.evaluate(pipeline, X_test, y_test)
-    Evaluate.export_report_json(
-        results["report_dict"], Config.PATH_MODEL + f"/report_{model}.json"
-    )
+    classification = Classification(model)
 
-    # 5. Visualisations
-    Evaluate.plot_confusion_matrix(
-        results["confusion_matrix"],
-        save_path=str(
-            Config.PATH_MODEL + f"confusion_matrix_{model}.png",
-        ),
-    )
-    Evaluate.plot_feature_importance(pipeline)
+    # Tourner tous les modèles
+    for model in classification.models:
+        pipeline = Classification(model)
+        pipeline.train(X_train, y_train)
+        Classification.save_model(pipeline.pipeline, name=model)
+        del pipeline
+        pipeline = Classification.load_model(name=model)
 
-    ###
-    # Prédiction d'un fichier audio
-    ###
+        # 4. Evaluation
+        results = Evaluate.evaluate(pipeline, X_test, y_test, model)
+        Evaluate.export_report_json(
+            results["report_dict"], Config.PATH_MODEL + f"/report_{model}.json"
+        )
 
-    # Prédiction sur un fichier audio
-    pipeline = Classification.load_model(name=model)
-    result = Classification.predict(
-        pipeline, Config.DATASET_PATH + Config.PATH_TEST + "videoplayback.m4a"
-    )
+        # 5. Visualisations
+        Evaluate.plot_confusion_matrix(
+            results["confusion_matrix"],
+            save_path=str(
+                Config.PATH_MODEL + f"confusion_matrix_{model}.png",
+            ),
+            show_plot=False,
+        )
+        Evaluate.plot_feature_importance(pipeline, show_plot=False)
 
-    print(f"Espèce prédite : {result['label']}")
-    if result["confidence"]:
-        for species, proba in sorted(
-            result["confidence"].items(), key=lambda item: item[1], reverse=True
-        ):
-            print(f"  {species}: {proba:.2%}")
+        ###
+        # Prédiction d'un fichier audio
+        ###
+
+        # Prédiction sur un fichier audio
+        pipeline = Classification.load_model(name=model)
+        result = Classification.predict(
+            pipeline, Config.DATASET_PATH + Config.PATH_TEST + "videoplayback.m4a"
+        )
+
+        print(f"Espèce prédite : {result['label']}")
+        if result["confidence"]:
+            for species, proba in sorted(
+                result["confidence"].items(), key=lambda item: item[1], reverse=True
+            ):
+                print(f"  {species}: {proba:.2%}")
